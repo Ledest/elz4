@@ -4,4 +4,4 @@
   {registered, []},
   {applications, [kernel, stdlib]},
   {env, []},
-  {modules, [lz4]}]}.
+  {modules, [lz4, lz4hc]}]}.

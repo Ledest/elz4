@@ -28,6 +28,9 @@
 lz4_test_() ->
     {timeout, 60, [fun lz4/0]}.
 
+lz4hc_test_() ->
+    {timeout, 60, [fun lz4hc/0]}.
+
 lz4() ->
     {ok, Data} = file:read_file("../README.md"),
     io:fwrite("~p~n", [file:get_cwd()]),
@@ -36,6 +39,20 @@ lz4() ->
     Decompressed2 = lz4:unzip(Compressed1, size(Data)),
     Decompressed3 = lz4:unzip(Compressed1),
     {ok, Compressed4} = lz4:compress(Data),
+    {ok, Decompressed4} = lz4:decompress(Compressed4),
+    ?assertEqual(Data, Decompressed1),
+    ?assertEqual(Data, Decompressed2),
+    ?assertEqual(Data, Decompressed3),
+    ?assertEqual(Data, Decompressed4).
+
+lz4hc() ->
+    {ok, Data} = file:read_file("../README.md"),
+    io:fwrite("~p~n", [file:get_cwd()]),
+    Compressed1 = lz4hc:zip(Data),
+    Decompressed1 = lz4:unzip(Compressed1, size(Data) * 256),
+    Decompressed2 = lz4:unzip(Compressed1, size(Data)),
+    Decompressed3 = lz4:unzip(Compressed1),
+    {ok, Compressed4} = lz4hc:compress(Data),
     {ok, Decompressed4} = lz4:decompress(Compressed4),
     ?assertEqual(Data, Decompressed1),
     ?assertEqual(Data, Decompressed2),
