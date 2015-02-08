@@ -28,7 +28,6 @@
 #include <erl_nif.h>
 #include <lz4.h>
 #include <stdint.h>
-#include <stdio.h>
 
 static inline ERL_NIF_TERM make_ok(ErlNifEnv *env, ERL_NIF_TERM msg)
 {
@@ -67,7 +66,6 @@ static ERL_NIF_TERM lz4_unzip(ErlNifEnv* env, ErlNifBinary *i, int ms)
 		return make_error(NULL, "insufficient_memory");
 
 	os = LZ4_decompress_safe((const char*)i->data, (char*)o.data, i->size, o.size);
-	fprintf(stderr, "\no.size=%zu, os=%d\n", o.size, os);
 	return os < 0
 	       ? make_error(env, "unknown")
 	       : (os == o.size || enif_realloc_binary(&o, os))
