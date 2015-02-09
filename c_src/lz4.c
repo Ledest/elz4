@@ -43,18 +43,21 @@ ERL_NIF_TERM lz4_zip(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
 	ErlNifBinary i, o;
 	int os;
+	const char *s = "insufficient_memory";
 
 	if (!enif_inspect_binary(env, argv[0], &i) && !enif_inspect_iolist_as_binary(env, argv[0], &i))
 		return enif_make_badarg(env);
 
 	if (!enif_alloc_binary(LZ4_compressBound(i.size), &o))
-		return make_error(env, "insufficient_memory");
+		return make_error(NULL, s);
 
 	os = LZ4_compress((const char*)i.data, (char*)o.data, i.size);
-	if (os != o.size)
-		enif_realloc_binary(&o, os);
-
-	return enif_make_binary(env, &o);
+	if (os) {
+		if (os == o.size || enif_realloc_binary(&o, os))
+			return enif_make_binary(env, &o);
+		s = "unknown";
+	}
+	return make_error(env, s);
 }
 
 static ERL_NIF_TERM lz4_unzip(ErlNifEnv* env, ErlNifBinary *i, int ms)
@@ -103,14 +106,16 @@ ERL_NIF_TERM lz4_compress(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 		return enif_make_badarg(env);
 
 	if (!enif_alloc_binary(LZ4_compressBound(i.size) + sizeof(uint32_t), &o))
-		return make_error(env, s);
+		return make_error(NULL, s);
 
 	*(uint32_t*)o.data = (uint32_t)i.size;
 	os = LZ4_compress((const char*)i.data, (char*)o.data + sizeof(uint32_t), i.size);
-
-	return (os != o.size && !enif_realloc_binary(&o, os + sizeof(uint32_t)))
-	       ? make_error(env, s)
-	       : make_ok(env, enif_make_binary(env, &o));
+	if (os) {
+		if (os == o.size || enif_realloc_binary(&o, os + sizeof(uint32_t)))
+			return make_ok(env, enif_make_binary(env, &o));
+		s = "unknown";
+	}
+	return make_error(env, s);
 }
 
 ERL_NIF_TERM lz4_decompress(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
