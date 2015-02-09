@@ -40,10 +40,12 @@ lz4() ->
     Decompressed3 = lz4:unzip(Compressed1),
     {ok, Compressed4} = lz4:compress(Data),
     {ok, Decompressed4} = lz4:decompress(Compressed4),
+    {ok, Decompressed5} = lz4:uncompress(Compressed4),
     ?assertEqual(Data, Decompressed1),
     ?assertEqual(Data, Decompressed2),
     ?assertEqual(Data, Decompressed3),
-    ?assertEqual(Data, Decompressed4).
+    ?assertEqual(Data, Decompressed4),
+    ?assertEqual(Data, Decompressed5).
 
 lz4hc() ->
     {ok, Data} = file:read_file("../README.md"),
@@ -54,7 +56,9 @@ lz4hc() ->
     Decompressed3 = lz4:unzip(Compressed1),
     {ok, Compressed4} = lz4hc:compress(Data),
     {ok, Decompressed4} = lz4:decompress(Compressed4),
+    {ok, Decompressed5} = lz4:uncompress(Compressed4),
     ?assertEqual(Data, Decompressed1),
     ?assertEqual(Data, Decompressed2),
     ?assertEqual(Data, Decompressed3),
-    ?assertEqual(Data, Decompressed4).
+    ?assertEqual(Data, Decompressed4),
+    ?assertEqual(Data, Decompressed5).
