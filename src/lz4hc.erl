@@ -48,8 +48,8 @@ load_nif() ->
     L = filename:join(P, "lz4hc"),
     erlang:load_nif(L, {?LZ4HC_NIF_VSN, unicode:characters_to_binary(L, E, E)}).
 
--spec zip(Data::binary()|iodata()) -> binary().
+-spec zip(Data::iodata()) -> binary().
 zip(_Data) -> exit(lz4hc_nif_not_loaded).
 
--spec compress(Data::binary()|iodata()) -> binary().
+-spec compress(Data::iodata()) -> binary().
 compress(_Data) -> exit(lz4hc_nif_not_loaded).
