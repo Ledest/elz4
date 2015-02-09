@@ -40,7 +40,7 @@ static inline ERL_NIF_TERM make_error(ErlNifEnv *env, const char *msg)
 	return enif_make_tuple2(env, enif_make_atom(env, "error"), enif_make_atom(env, msg));
 }
 
-ERL_NIF_TERM lz4hc_zip(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+static ERL_NIF_TERM lz4hc_zip(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
 	ErlNifBinary i, o;
 	int os;
@@ -61,7 +61,7 @@ ERL_NIF_TERM lz4hc_zip(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 	return make_error(env, s);
 }
 
-ERL_NIF_TERM lz4hc_compress(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+static ERL_NIF_TERM lz4hc_compress(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
 	ErlNifBinary i, o;
 	int os;
@@ -83,17 +83,17 @@ ERL_NIF_TERM lz4hc_compress(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 	return make_error(env, s);
 }
 
-int on_load(ErlNifEnv *env, void **priv, ERL_NIF_TERM info)
+static int on_load(ErlNifEnv *env, void **priv, ERL_NIF_TERM info)
 {
 	return 0;
 }
 
-int on_reload(ErlNifEnv *env, void**priv, ERL_NIF_TERM info)
+static int on_reload(ErlNifEnv *env, void**priv, ERL_NIF_TERM info)
 {
 	return 0;
 }
 
-int on_upgrade(ErlNifEnv *env, void **priv, void** old_priv, ERL_NIF_TERM info)
+static int on_upgrade(ErlNifEnv *env, void **priv, void** old_priv, ERL_NIF_TERM info)
 {
 	return 0;
 }
